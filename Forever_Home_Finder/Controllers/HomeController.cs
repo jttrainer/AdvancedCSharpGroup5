@@ -1,37 +1,22 @@
-﻿using Forever_Home_Finder.Models;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using Forever_Home_Finder.Models;
 
 namespace Forever_Home_Finder.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private Repository<Pet> data { get; set; }
+        public HomeController(ForeverContext ctx) => data = new Repository<Pet>(ctx);
 
-        public HomeController(ILogger<HomeController> logger)
+        public ViewResult Index()
         {
-            _logger = logger;
-        }
+            var random = data.Get(new QueryOptions<Pet>
+            {
+                OrderBy = b => Guid.NewGuid()
+            });
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(random);
         }
     }
 }
