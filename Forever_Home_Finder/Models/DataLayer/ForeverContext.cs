@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 
 
-namespace Forever_Home_Finder.Models.DataLayer
+namespace Forever_Home_Finder.Models
 {
     public class ForeverContext : IdentityDbContext<User>
     {
@@ -14,13 +14,28 @@ namespace Forever_Home_Finder.Models.DataLayer
             : base(options)
         { }
 
+        public DbSet<User> users { get; set; }
+
+        public DbSet<PetType> petTypes { get; set; }
+
         public DbSet<Pet> pets { get; set; }
-        public DbSet<Type> type { get; set; }
-        public DbSet<Price> price { get; set; }
+        
+        public DbSet<AddInfo> addInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // needs contents
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Pet>().HasOne(p => p.PetType)
+                .WithMany(pt => pt.Pets)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // seed initial data
+            modelBuilder.ApplyConfiguration(new SeedAddInfo());
+            modelBuilder.ApplyConfiguration(new SeedPet());
+            modelBuilder.ApplyConfiguration(new SeedPetType());
+            modelBuilder.ApplyConfiguration(new SeedUser());
         }
 
         public static async Task CreateAdminUser(IServiceProvider serviceProvider)

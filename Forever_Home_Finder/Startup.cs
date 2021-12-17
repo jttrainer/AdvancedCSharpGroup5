@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;    // add this
-using Bookstore.Models;
+using Forever_Home_Finder.Models;
 
-namespace Bookstore
+namespace Forever_Home_Finder
 {
     public class Startup
     {
@@ -24,7 +24,7 @@ namespace Bookstore
             services.AddSession();
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddDbContext<ForeverContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("BookstoreContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("ForeverContext")));
             services.AddIdentity<User, IdentityRole>(options => {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
